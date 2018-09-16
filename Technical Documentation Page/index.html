@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Technical Documentation Page</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<nav id="navbar">
+		<header><b>Webpack</b></header>
+		<ul>
+			<li><a href="#What_is_it" class="nav-link">What is it</a></li>
+			<li><a href="#Why_webpack?" class="nav-link">Why webpack?</a></li>
+			<li><a href="#Installation" class="nav-link">Installation</a></li>
+			<li><a href="#Webpack_config" class="nav-link">Webpack config</a></li>
+			<li><a href="#Webpack_moduls" class="nav-link">Webpack moduls</a></li>
+			<li><a href="#Required_libraries" class="nav-link">Required libraries</a></li>
+			<li><a href="#Loaders" class="nav-link">Loaders</a></li>
+		</ul>
+	</nav>
+
+	<main id="main-doc">
+		<section class="main-section" id="What_is_it">
+			<header>What is it</header>
+			<p>Webpack является одним из самых мощных и гибких инструментов для сборки frontend. Она содержит основные понятия, однако для начала их будет достаточно.</p>
+			<img src="https://proglib.io/wp-content/uploads/2017/05/webpck.png" alt="logoWP">
+			<p>Инструменты сборки стали неотъемлемой частью веб-разработки, в основном из-за возрастающей сложности JS-приложений. Бандлеры позволяют нам упаковывать, компилировать, организовывать множество ресурсов и библиотек, необходимых для современного веб-проекта.
+            В этом гайде будет рассмотрен webpack, мощный бандлер с открытым исходным кодом, который может обрабатывать огромное количество различных задач. Автор статьи покажет вам как писать модули, бандл код, использовать некоторые плагины загрузчика. Пособие подойдет для тех, кто только начинает изучать этот инструмент, однако уже имеет некоторые знания JS.</p>
+		</section>
+		<section class="main-section" id="Why_webpack?">
+			<header>Why webpack?</header>
+			<p>Как и во многих других аспектах веб-разработки, здесь нет стандартного набора инструментов, который нужно использовать. Прямо сейчас разработчики могут выбирать между webpack, Gulp, Browserify, NPM scripts, Grunt и еще десятком других. Можно, конечно, провести их глубокое сравнение, но в целом все эти инструменты очень похожи, поэтому чаще всего дело сводится к личным предпочтениям и типу проекта, над которым вы работаете.
+			Тут некоторые плюсы и минусы, которые помогут вам решить, подходит ли этот бандлер именно вам:</p>
+			<p>Плюсы:</p>
+			<ul>
+				<li>Великолепен для работы с одностраничными приложениями</li>
+				<li>Воспринимает как require()- так и import-синтаксисы модуля</li>
+				<li>Позволяет осуществлять продвинутое разделение кода</li>
+				<li>Hot Reload для более быстрой разработки с помощью React, Vue.js и подобных фреймворков</li>
+				<li>Наиболее популярный инструмент разработки по версии обзора JS в 2016 году</li>
+			</ul>
+			<p>Минусы:</p>
+			<ul>
+				<li>Не подойдет для новичков</li>
+				<li>Работа с файлами CSS, картинками и другими не JS ресурсами по началу сбивает с толку</li>
+				<li>Документация могла бы быть лучше</li>
+				<li>Очень много изменений, большинство гайдов 2016 уже устарели</li>
+			</ul>
+		</section>
+		<section class="main-section" id="Installation">
+			<header>Installation</header>
+			<p>Самый простой способ установки это использовать менеджер пакетов. Мы будем пользоваться npm, но вы можете использовать Yarn или любую другую альтернативу. В обоих случаях вам нужно иметь Node.js и готовый к работе package .json на компьютере.
+			Предпочтительнее устанавливать его локально без тега <code>–g</code>. Это поможет каждому, кто работает над вашим проектом, быть уверенным в том, что у вас одна и та же версия webpack’a.</p>
+			<code>npm install webpack --save-dev</code>
+			<P>После того как вы установили бандлер, лучше всего запустить его с помощью скрипта Node.js. Добавьте эти строки в ваш package.json.</P>
+			<code>//...
+	    	"scripts": {
+	        "build": "webpack -p",
+	        "watch": "webpack --watch"
+	   		 },
+			//...</code>
+			<p>Теперь с помощью вызова npm run build из командной строки мы можем сделать webpack bundle нашими файлами (-р означает создание и уменьшает связанный код). С запуском npm run watch начнется процесс, который автоматически свяжет наши файлы в случае изменения любого из них.
+			Последняя часть нашей настройки — это указать webpack, какие файлы связывать. Рекомендуем сделать это путем создания config файла.</p>
+		</section>
+		<section class="main-section" id="Webpack_config">
+			<header>Webpack config</header>
+			<p>Здесь мы рассмотрим файл конфигурации в его самой базовой форме, но не позволяйте ему вас провести- файл конфигурации webpack достаточно мощный, довольно сильно различается от проекта к проекту и в некоторых случаях может стать ну очень сложным.
+			В корневой директории вашего проекта добавьте файл webpack.config.js.</p>
+			<code>var path = require('path');
+			module.exports = {
+			  entry: './assets/js/index.js',
+			  output: {
+			    filename: 'bundle.js',
+			    path: path.resolve(__dirname, 'dist')
+			  }
+			};
+			</code>
+			<p>entry указывает webpack’y, какой из JavaScript файлов является основным. Существует множество различных стратегий настройки входных точек, но в большинстве случаев достаточно одной записи. В output мы указываем имя нашего пакета и путь к нему. После запуска webpack мы получим весь наш JavaScript в файле bundle.js. Это единственный файл, который мы будем связывать в нашем HTML.Этой настройки должно быть достаточно для того, чтобы начать. Позже мы добавим кое-что сюда, а пока давайте посмотрим, как работает модуль.</p>
+		</section>
+		<section class="main-section" id="Webpack_moduls">
+			<header>Webpack moduls</header>
+			<p>Webpack предоставляет несколько способов работы с модулями, и большую часть времени вы можете свободно работать с любым из них. Для этого урока мы будем использовать синтаксис импорта ES6.
+			Мы хотим добавить модуль, который приветствует наших пользователей. Мы создаем файл greeter.js и экспортируем простую функцию.</p>
+			<code>function greet() {
+ 		   console.log('Have a great day!');
+			};
+			export default greet;
+			</code>
+			<p>Чтобы использовать этот модуль, мы должны импортировать его и вызвать его в нашей точке входа, которым является, если вы посмотрите на файл конфигурации, — index.js.</p>
+			<code>import greet from './greeter.js';
+			console.log("I'm the entry point");
+			greet();</code>
+			<p>Теперь, когда мы запускаем bundler с npm run build и открываем наш HTML в браузере, мы видим следующее:</p>
+			<img src="https://proglib.io/wp-content/uploads/2017/05/w1.png" alt="smthing about webpack">
+			<p>Наша точка входа и наш модуль greeter были скомпилированы в один файл, называемый bundle.js, и он был выполнен браузером. Вот простая схема того, что происходит на данный момент:</p>
+			<img src="https://proglib.io/wp-content/uploads/2017/05/w2.png" alt="">
+		</section>
+		<section class="main-section" id="Required_libraries">
+			<header>Required libraries</header>
+			<p>Мы хотим, чтобы наше приложение указывало, в какой день недели он встречает пользователей. Для этого мы будем использовать moment.js, импортируя его непосредственно в наш модуль greeter.
+			Сначала мы должны установить библиотеку через npm:</p>
+			<code>npm install moment --save</code>
+			<p>Затем в нашем модуле приветствия мы просто импортируем библиотеку точно так же, как мы импортировали локальные модули в предыдущую точку:</p>
+			<code>import moment from 'moment';
+
+			function greet() {
+			    var day = moment().format('dddd');
+			    console.log('Have a great ' + day + '!');
+			};
+
+			export default greet;
+			</code>
+			<p>После того как мы снова свяжем код, чтобы применить изменения, в консоли обозревателя появятся следующие сообщения:</p>
+			<img src="https://proglib.io/wp-content/uploads/2017/05/w3.png" alt="">
+			<p>Наша блок-схема теперь выглядит так:</p>
+			<img src="https://proglib.io/wp-content/uploads/2017/05/w4.png" alt="">
+		</section>
+		<section class="main-section" id="Loaders">
+			<header>Loaders</header>
+			<p>Загрузчики — это способ webpack выполнять задачи во время компоновки и до или после обработки файлов каким-либо образом. Например, они могут компилировать TypeScript, загружать компоненты Vue.js, отображать шаблоны и многое другое. Большинство загрузчиков написаны сообществом, поскольку список популярных загрузчиков можно посмотреть здесь.
+			Предположим, мы хотим добавить линтер к нашему проекту, который проверяет наш код JS на наличие ошибок. Мы можем это сделать, включив загрузчик JSHint, который будет перехватывать все виды плохого кода.
+			Сначала нам нужно установить JSHint и загрузчик webpack JSHint:</p>
+			<code>npm install jshint jshint-loader --save-dev</code>
+			<p>Теперь мы собираемся добавить несколько строк в наш файл конфигурации webpack. Это инициализирует загрузчик, сообщает ему, какие типы файлов следует проверять, а какие — игнорировать.</p>
+			<code>
+				var path = require('path');
+
+			module.exports = {
+			  entry: './assets/js/index.js',
+			  output: {
+			    filename: 'bundle.js',
+			    path: path.resolve(__dirname, 'dist')
+			  },
+			  // добавим загрузчик JSHint 
+			  module: {
+			    rules: [{
+			      test: /\.js$/, // запустим загрузчик во всех файлах .js
+			      exclude: /node_modules/, // проигнорируем все файлы в папке  node_modules 
+			      use: 'jshint-loader'
+			    }]
+			  }
+			};
+			</code>
+			<p>Поскольку moment.js находится в папке node_modules, он не будет линтирован загрузчиком JSHint:</p>
+			<img src="https://proglib.io/wp-content/uploads/2017/05/w6.png" alt="">
+		</section>
+	</main>
+	<script type="text/javascript" src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+</body>
+</html>
